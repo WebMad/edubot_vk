@@ -4,7 +4,7 @@
 namespace Framework;
 
 
-use app\Bootstrap;
+use App\Bootstrap;
 
 class App
 {
