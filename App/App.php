@@ -1,10 +1,7 @@
 <?php
 
 
-namespace Framework;
-
-
-use App\Bootstrap;
+namespace App;
 
 class App
 {

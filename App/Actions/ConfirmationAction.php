@@ -2,7 +2,7 @@
 
 namespace App\Actions;
 
-use Framework\AbstractAction;
+use App\AbstractAction;
 
 class ConfirmationAction extends AbstractAction
 {

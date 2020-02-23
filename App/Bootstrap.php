@@ -3,7 +3,6 @@
 namespace App;
 
 use App\Models\Database;
-use Framework\AbstractAction;
 
 class Bootstrap
 {

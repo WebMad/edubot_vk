@@ -1,5 +1,5 @@
 <?php
-namespace Framework;
+namespace App;
 
 use Illuminate\Database\Capsule\Manager;
 use Illuminate\Database\Schema\Builder;

@@ -5,7 +5,7 @@ namespace App\Actions;
 
 
 use App\Models\User;
-use Framework\AbstractAction;
+use App\AbstractAction;
 
 class MessageNewAction extends AbstractAction
 {

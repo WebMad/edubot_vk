@@ -2,9 +2,8 @@
 
 include dirname(__DIR__) . "/vendor/autoload.php";
 
-use Framework\Migration;
+use App\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 
 class CreateUsersTable extends Migration
 {

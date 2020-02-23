@@ -1,6 +1,6 @@
 <?php
 
-use Framework\App;
+use App\App;
 
 require '../config/config.php';
 require '../helpers/default.php';
