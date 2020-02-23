@@ -10,10 +10,9 @@ class User extends Model
         'login',
         'password',
         'access_token',
-        'user_id',
         'dnevnik_user_id',
         'vk_user_id',
         'access_token',
-        'cookie'
+        'cookie_file'
     ];
 }

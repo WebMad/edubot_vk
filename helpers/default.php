@@ -1,1 +1,22 @@
 <?php
+
+use App\Models\User;
+
+/**
+ * @param User $user
+ */
+function saveUser(User $user)
+{
+    $GLOBALS['user'] = $user;
+}
+
+/**
+ * @return bool|mixed
+ */
+function getUser()
+{
+    if (!empty($GLOBALS['user'])) {
+        return $GLOBALS['user'];
+    }
+    return false;
+}

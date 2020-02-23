@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 use App\App;
 
 require '../config/config.php';

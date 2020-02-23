@@ -14,7 +14,7 @@ class CreateUsersTable extends Migration
             $table->string('login')->comment('Логин из дненивка');
             $table->string('password')->comment('Пароль из дневник');
             $table->string('access_token')->comment('Токен для API дневника');
-            $table->text('cookie')->comment('Куки пользователя');
+            $table->text('cookie_file')->comment('Куки файл пользователя');
             $table->bigInteger('dnevnik_user_id')->comment('ID пользователя в дневник ру');
             $table->bigInteger('vk_user_id')->comment('ID пользователя в ВК');
             $table->timestamps();

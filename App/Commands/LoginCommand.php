@@ -3,6 +3,7 @@
 namespace App\Commands;
 
 use App\Exceptions\ArgumentException;
+use App\Models\User;
 
 class LoginCommand extends AbstractCommand
 {
@@ -15,13 +16,27 @@ class LoginCommand extends AbstractCommand
     public function execute()
     {
         $args = $this->getArgs();
+        if (getUser()) {
+            return 'Вы уже авторизованы';
+        }
         if (!empty($args[0]) && !empty($args[1])) {
             $dnevnik_user_info = $this->loginDnevnik($args[0], $args[1]);
             if (!$dnevnik_user_info['result']) {
                 return 'Неверный логин или пароль';
             }
             $this->cookies = $dnevnik_user_info['cookies'];
-            return $this->getAccessToken(DNEVNIK_CLIENT_ID);
+            $access_token = $this->getAccessToken(DNEVNIK_CLIENT_ID);
+
+            User::create([
+                'login' => $args[0],
+                'password' => $args[1],
+                'vk_user_id' => $this->getMessageObject()['from_id'],
+                'access_token' => $access_token,
+                'dnevnik_user_id' => $dnevnik_user_info['user_id'],
+                'cookie_file' => json_encode($dnevnik_user_info['cookies']),
+            ]);
+
+            return 'Вход выполнен';
         }
         return 'Недостаточно аргументов';
     }
@@ -41,14 +56,14 @@ class LoginCommand extends AbstractCommand
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_POSTFIELDS => $fields,
             CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_COOKIEFILE => "",
-            CURLOPT_COOKIEJAR => $this->cookies
+            CURLOPT_COOKIEJAR => APP_DIR . '/temp/cookie_' . $this->getMessageObject()['from_id'] . '.txt',
         ]);
         ob_start();
         curl_exec($ch);
         $result = (string)ob_get_contents();
         $cookies = curl_getinfo($ch, CURLINFO_COOKIELIST);
         ob_end_clean();
+        curl_close($ch);
         if (stripos($result, 'Войти в Дневник.ру')) {
             return [
                 'result' => false,
@@ -79,14 +94,14 @@ class LoginCommand extends AbstractCommand
                 'is_granted' => 'true'
             ],
             CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_COOKIEFILE => $this->cookies,
+            CURLOPT_COOKIEFILE => APP_DIR . '/temp/cookie_' . $this->getMessageObject()['from_id'] . '.txt',
             CURLOPT_HEADER => true,
-            CURLOPT_NOBODY => true,
         ]);
         ob_start();
         curl_exec($ch);
-        $access_token = mb_substr(explode('&', urldecode(curl_getinfo($ch, CURLINFO_EFFECTIVE_URL)))[2], 10);
+        $access_token = substr(explode('&', ob_get_contents())[4], 28);
         ob_end_clean();
+        curl_close($ch);
         return $access_token;
     }
 }
