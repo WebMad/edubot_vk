@@ -10,11 +10,13 @@ class CreateUsersTable extends Migration
     public function up()
     {
         $this->schema->create('users', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('login');
-            $table->string('password');
-            $table->string('access_token');
-            $table->bigInteger('user_id');
+            $table->bigIncrements('id')->comment('ID записи');
+            $table->string('login')->comment('Логин из дненивка');
+            $table->string('password')->comment('Пароль из дневник');
+            $table->string('access_token')->comment('Токен для API дневника');
+            $table->text('cookie')->comment('Куки пользователя');
+            $table->bigInteger('dnevnik_user_id')->comment('ID пользователя в дневник ру');
+            $table->bigInteger('vk_user_id')->comment('ID пользователя в ВК');
             $table->timestamps();
         });
     }
