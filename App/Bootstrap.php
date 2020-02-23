@@ -14,6 +14,7 @@ class Bootstrap
      * @var bool
      */
     private $is_init = false;
+
     /**
      * @var Database
      */
@@ -27,14 +28,9 @@ class Bootstrap
         if ($this->isInit()) {
             return false;
         }
-        $constants = parse_ini_file(APP_DIR . '/.env');
-        foreach ($constants as $name_const => $val_const) {
-            defined($name_const) or define($name_const, $val_const);
-        }
-        $this->is_init = true;
-
         $this->database = new Database();
 
+        $this->is_init = true;
         $this->route();
     }
 

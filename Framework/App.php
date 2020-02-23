@@ -5,8 +5,6 @@ namespace Framework;
 
 
 use app\Bootstrap;
-use VK\Client\VKApiClient;
-use VK\OAuth\VKOAuth;
 
 class App
 {

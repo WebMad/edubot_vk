@@ -1,7 +1,8 @@
 <?php
-define('DB_DRIVER', 'mysql');
-define('DB_HOST', '127.0.0.1');
-define('DB_NAME', 'edubot');
-define('DB_USER', 'root');
-define('DB_PASSWORD', '');
-define('DB_PORT', 3306);
+defined('APP_DIR') or define('APP_DIR', dirname(__DIR__));
+defined('APP_ENV') or define('APP_ENV', file_get_contents(APP_DIR . '/.env'));
+
+$constants = parse_ini_file(APP_DIR. '/.env');
+foreach ($constants as $name_const => $val_const) {
+    defined($name_const) or define($name_const, $val_const);
+}
