@@ -45,7 +45,7 @@ class Bootstrap
             $check_result = $this->checkCredential($data);
             if (!$check_result['error']) {
                 if (!empty($data['type'])) {
-                    $action_full_name = 'App\actions\\' . str_replace('_', '', ucwords($data['type'], '_')) . 'Action';
+                    $action_full_name = 'App\Actions\\' . str_replace('_', '', ucwords($data['type'], '_')) . 'Action';
                     $action_file_name = APP_DIR . '/' . str_replace('\\', '/', $action_full_name) . '.php';
                     if (file_exists($action_file_name)) {
                         require $action_file_name;
