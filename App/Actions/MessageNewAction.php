@@ -3,13 +3,19 @@
 namespace App\Actions;
 
 use App\Commands\AbstractCommand;
+use App\Commands\ClassInfoCommand;
 use App\Commands\LoginCommand;
+use App\Commands\LogoutCommand;
+use App\Commands\UserRolesCommand;
 use App\Models\User;
 
 class MessageNewAction extends AbstractAction
 {
     private $commands = [
         'войти' => LoginCommand::class,
+        'выйти' => LogoutCommand::class,
+        'класс' => ClassInfoCommand::class,
+        'моироли' => UserRolesCommand::class,
     ];
 
     /**
@@ -19,7 +25,11 @@ class MessageNewAction extends AbstractAction
     {
         $message_object = $data['object'];
 
-        $command = mb_strtolower(substr($message_object['text'], 0, stripos($message_object['text'], ' ')));
+        $command = '';
+        $command_parts = explode(' ', $message_object['text']);
+        if (isset($command_parts[0])) {
+            $command = $command_parts[0];
+        }
         if (array_key_exists($command, $this->commands)) {
 
             $user = User::where(['vk_user_id' => $message_object['from_id']])->first();

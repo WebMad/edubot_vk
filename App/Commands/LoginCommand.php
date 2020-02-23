@@ -8,7 +8,8 @@ use App\Models\User;
 class LoginCommand extends AbstractCommand
 {
     protected $command_name = 'Войти';
-    private $cookies;
+    private $cookie_file;
+
     /**
      * @inheritDoc
      * @throws ArgumentException
@@ -24,7 +25,7 @@ class LoginCommand extends AbstractCommand
             if (!$dnevnik_user_info['result']) {
                 return 'Неверный логин или пароль';
             }
-            $this->cookies = $dnevnik_user_info['cookies'];
+            $this->cookie_file = $dnevnik_user_info['cookie_file'];
             $access_token = $this->getAccessToken(DNEVNIK_CLIENT_ID);
 
             User::create([
@@ -33,7 +34,7 @@ class LoginCommand extends AbstractCommand
                 'vk_user_id' => $this->getMessageObject()['from_id'],
                 'access_token' => $access_token,
                 'dnevnik_user_id' => $dnevnik_user_info['user_id'],
-                'cookie_file' => json_encode($dnevnik_user_info['cookies']),
+                'cookie_file' => $this->cookie_file,
             ]);
 
             return 'Вход выполнен';
@@ -49,6 +50,9 @@ class LoginCommand extends AbstractCommand
             'exceededAttempts' => false,
             "ReturnUrl" => "https://dnevnik.ru/user/settings.aspx",
         ];
+
+        $cookie_file = APP_DIR . '/temp/cookie_' . $this->getMessageObject()['from_id'] . '.txt';
+
         $ch = curl_init();
         curl_setopt_array($ch, [
             CURLOPT_URL => 'https://login.dnevnik.ru/login/esia/astrakhan',
@@ -56,12 +60,11 @@ class LoginCommand extends AbstractCommand
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_POSTFIELDS => $fields,
             CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_COOKIEJAR => APP_DIR . '/temp/cookie_' . $this->getMessageObject()['from_id'] . '.txt',
+            CURLOPT_COOKIEJAR => $cookie_file,
         ]);
         ob_start();
         curl_exec($ch);
         $result = (string)ob_get_contents();
-        $cookies = curl_getinfo($ch, CURLINFO_COOKIELIST);
         ob_end_clean();
         curl_close($ch);
         if (stripos($result, 'Войти в Дневник.ру')) {
@@ -75,7 +78,7 @@ class LoginCommand extends AbstractCommand
         return [
             'result' => true,
             'user_id' => $user_id,
-            'cookies' => $cookies,
+            'cookie_file' => $cookie_file,
         ];
     }
 
@@ -94,7 +97,7 @@ class LoginCommand extends AbstractCommand
                 'is_granted' => 'true'
             ],
             CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_COOKIEFILE => APP_DIR . '/temp/cookie_' . $this->getMessageObject()['from_id'] . '.txt',
+            CURLOPT_COOKIEFILE => $this->cookie_file,
             CURLOPT_HEADER => true,
         ]);
         ob_start();
