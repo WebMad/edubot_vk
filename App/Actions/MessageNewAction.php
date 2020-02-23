@@ -1,11 +1,8 @@
 <?php
 
-
 namespace App\Actions;
 
-
 use App\Models\User;
-use App\AbstractAction;
 
 class MessageNewAction extends AbstractAction
 {
