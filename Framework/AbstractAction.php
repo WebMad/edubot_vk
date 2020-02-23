@@ -1,6 +1,6 @@
 <?php
 
-namespace framework;
+namespace Framework;
 
 use VK\Client\VKApiClient;
 

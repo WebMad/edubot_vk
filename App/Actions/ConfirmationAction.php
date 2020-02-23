@@ -1,8 +1,8 @@
 <?php
 
-namespace app\actions;
+namespace App\Actions;
 
-use framework\AbstractAction;
+use Framework\AbstractAction;
 
 class ConfirmationAction extends AbstractAction
 {

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace framework;
+namespace Framework;
 
 
 use app\Bootstrap;

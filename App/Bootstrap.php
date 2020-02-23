@@ -1,8 +1,9 @@
 <?php
 
-namespace app;
+namespace App;
 
-use framework\AbstractAction;
+use App\Models\Database;
+use Framework\AbstractAction;
 
 class Bootstrap
 {
@@ -13,6 +14,10 @@ class Bootstrap
      * @var bool
      */
     private $is_init = false;
+    /**
+     * @var Database
+     */
+    private $database;
 
     /**
      * @return bool
@@ -28,6 +33,8 @@ class Bootstrap
         }
         $this->is_init = true;
 
+        $this->database = new Database();
+
         $this->route();
     }
 
@@ -40,7 +47,7 @@ class Bootstrap
         if (!empty($post)) {
             $data = json_decode($post, true);
             if (!empty($data['type'])) {
-                $action_full_name = 'app\actions\\' . ucfirst($data['type']) . 'Action';
+                $action_full_name = 'App\actions\\' . str_replace('_', '', ucwords($data['type'], '_')) . 'Action';
                 $action_file_name = APP_DIR . '/' . str_replace('\\', '/', $action_full_name) . '.php';
                 if (file_exists($action_file_name)) {
                     require $action_file_name;

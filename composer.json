@@ -1,5 +1,13 @@
 {
   "require": {
-    "vkcom/vk-php-sdk": "^5.101"
+    "vkcom/vk-php-sdk": "^5.101",
+    "illuminate/database": "^5.8",
+    "slim/slim": "^4.3",
+    "robmorgan/phinx": "^0.11.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "Framework\\": "Framework"
+    }
   }
 }
