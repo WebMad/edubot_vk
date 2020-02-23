@@ -81,8 +81,8 @@ class Bootstrap
         if ($data['group_id'] == GROUP_ID) {
             if ($data['secret'] == SECRET_KEY) {
                 return [
-                    'error' => true,
-                    'message' => 'Secret key is not valid'
+                    'error' => false,
+                    'message' => 'Success'
                 ];
             }
             return [
