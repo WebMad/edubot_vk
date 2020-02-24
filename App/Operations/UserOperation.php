@@ -11,6 +11,13 @@ class UserOperation
         return json_decode(file_get_contents("https://api.dnevnik.ru/v2.0/users/$user_id?access_token={$user->access_token}"), true);
     }
 
+    public function getUserEduGroups($user_id)
+    {
+        $user = getUser();
+        $user_info = $this->getUserInfo($user_id);
+        return json_decode(file_get_contents("https://api.dnevnik.ru/v2.0/persons/{$user_info['personId']}/edu-groups?access_token={$user->access_token}"), true);
+    }
+
     public function getUserRoles($user_id)
     {
         $user = getUser();

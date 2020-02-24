@@ -31,7 +31,7 @@ class LoginCommand extends AbstractCommand
             User::create([
                 'login' => $args[0],
                 'password' => $args[1],
-                'vk_user_id' => $this->getMessageObject()['from_id'],
+                'vk_user_id' => $this->getMessageObject()['peer_id'],
                 'access_token' => $access_token,
                 'dnevnik_user_id' => $dnevnik_user_info['user_id'],
                 'cookie_file' => $this->cookie_file,
