@@ -2,9 +2,7 @@
 
 namespace App\Commands;
 
-use App\Models\User;
-
-class LoginCommand extends AbstractCommand
+class HelpCommand extends AbstractCommand
 {
     protected $command_name = 'Войти';
     private $cookie_file;
@@ -16,30 +14,17 @@ class LoginCommand extends AbstractCommand
      */
     public function execute()
     {
-        $args = $this->getArgs();
-        if (getUser()) {
-            return 'Вы уже авторизованы';
-        }
-        if (!empty($args[0]) && !empty($args[1])) {
-            $dnevnik_user_info = $this->loginDnevnik($args[0], $args[1]);
-            if (!$dnevnik_user_info['result']) {
-                return 'Неверный логин или пароль';
-            }
-            $this->cookie_file = $dnevnik_user_info['cookie_file'];
-            $access_token = $this->getAccessToken(DNEVNIK_CLIENT_ID);
-
-            User::create([
-                'login' => $args[0],
-                'password' => $args[1],
-                'vk_user_id' => $this->getMessageObject()['peer_id'],
-                'access_token' => $access_token,
-                'dnevnik_user_id' => $dnevnik_user_info['user_id'],
-                'cookie_file' => $this->cookie_file,
-            ]);
-
-            return 'Вход выполнен';
-        }
-        return 'Недостаточно аргументов';
+        return <<<text
+Список команд:
+/help - список команд
+/войти <логин> <пароль> - войти в дневник.ру
+/выйти - выйти из текущего аккаунта
+/класс - информация о вашем классе
+/расписание - расписание на 3 дня
+/дз - домашнее задание на завтра
+/оценки - ваши отметки по предметам 
+/роли - ваши системные роли в Дневник.ру
+text;
     }
 
     private function loginDnevnik($login, $password)

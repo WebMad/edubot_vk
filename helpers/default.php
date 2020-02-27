@@ -20,3 +20,8 @@ function getUser()
     }
     return false;
 }
+
+function getDic()
+{
+    return require '../config/dic.php';
+}

@@ -13,9 +13,11 @@ abstract class AbstractCommand
     protected $command_name;
     private $message_object;
 
+    protected $check_auth = true;
+
     public function __construct($message_object)
     {
-        $this->args = explode(' ', mb_substr($message_object['text'], mb_strlen($this->getCommandName()) + 1));
+        $this->args = explode(' ', mb_substr($message_object['text'], mb_strlen($this->getCommandName()) + mb_strlen(COMMAND_PREFIX) + 1));
         $this->setMessageObject($message_object);
         $this->setText($message_object['text']);
     }
@@ -67,5 +69,10 @@ abstract class AbstractCommand
     public function setMessageObject($message_object)
     {
         $this->message_object = $message_object;
+    }
+
+    public function getCheckAuth()
+    {
+        return $this->check_auth;
     }
 }

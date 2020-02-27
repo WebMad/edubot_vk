@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Commands;
 
 
@@ -15,7 +14,7 @@ class UserRolesCommand extends AbstractCommand
     public function execute()
     {
         $result = '';
-        $roles = (new UserOperation())->getUserRoles(getUser()->id);
+        $roles = (new UserOperation())->getUserRoles(getUser()->dnevnik_user_id);
         foreach ($roles as $role) {
             $result .= $role . "\n";
         }
