@@ -32,8 +32,6 @@ class LessonsCommand extends AbstractCommand
             $dates[$lesson['date']] .= ' - ' . $lesson['subject']['name'] . "\n";
         }
 
-        var_dump($dates);
-
         foreach ($dates as $key => $date) {
             $result .= $key . "\n";
             $result .= $date;

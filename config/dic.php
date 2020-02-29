@@ -31,6 +31,14 @@ return [
         6 => 'Суббота',
     ],
     'icons' => [
-        'notepad' => '📝'
+        'notepad' => '📝',
+        'pencil' => '✏',
+        'megaphone' => '📢',
+        'user' => '👤',
+        'calendar' => '📅',
+        'success' => '✅',
+        'fail' => '⛔',
+        'warning' => '⚠',
     ],
+    'commands' => include 'commands.php',
 ];

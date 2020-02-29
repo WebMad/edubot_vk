@@ -2,6 +2,8 @@
 
 namespace App\Commands;
 
+use App\HttpRequestBuilder\HttpRequest;
+use App\Operations\ContextOperation;
 use App\Operations\UserOperation;
 use DateTime;
 
@@ -18,25 +20,39 @@ class HomeworkCommand extends AbstractCommand
 
         $user = getUser();
 
-        $user_operation = new UserOperation();
+        $user_info = ContextOperation::me();
+        $edu_group = $user_info->eduGroups[0]->id_str;
 
-        $user_info = $user_operation->getContext();
-
-        $edu_group = $user_info['eduGroups'][0];
-
-        $schedule = json_decode(file_get_contents("https://api.dnevnik.ru/v2.0/persons/{$user_info['personId']}/groups/{$edu_group['id_str']}/schedules?startDate={$date->format('Y-m-d')}&endDate={$date->format('Y-m-d')}&access_token={$user->access_token}"), true)['days'][0]['lessons'];
-
-        $last_lesson = $schedule[count($schedule) - 1];
-
+        $today_schedule = HttpRequest::init('persons/:person_id/groups/:edu_group_id/schedules', [
+            'url_params' => [
+                'person_id' => $user_info->personId,
+                'edu_group_id' => $edu_group->id_str,
+            ],
+            'args' => [
+                'access_token' => $user->access_token,
+                'startDate' => $date->format('Y-m-d'),
+                'endDate' => $date->format('Y-m-d'),
+            ],
+            'is_assoc' => true,
+        ])->execute()['days'][0]['lessons'];
+        $last_lesson = $today_schedule[count($today_schedule) - 1];
         $hours = trim(substr($last_lesson['hours'], stripos($last_lesson['hours'], '-') + 2));
 
-        $school = $user_info['schools'][0];
+        $school = $user_info->schools[0];
 
-        if ($date >= new DateTime($hours)) {
-            $homeworks = json_decode(file_get_contents("https://api.dnevnik.ru/v2.0/users/me/school/{$school['id']}/homeworks?startDate={$date->modify('+1 day')->format('Y-m-d')}&endDate={$date->format('Y-m-d')}&access_token={$user->access_token}"), true);
-        } else {
-            $homeworks = json_decode(file_get_contents("https://api.dnevnik.ru/v2.0/users/me/school/{$school['id']}/homeworks?startDate={$date->format('Y-m-d')}&endDate={$date->format('Y-m-d')}&access_token={$user->access_token}"), true);
-        }
+        $homeworks_date = ($date >= new DateTime($hours)) ? (clone $date)->modify('+1 day') : clone $date;
+
+        $homeworks = HttpRequest::init('users/me/school/:school_id/homeworks', [
+            'url_params' => [
+                'school_id' => $school->id
+            ],
+            'args' => [
+                'access_token' => $user->access_token,
+                'startDate' => $homeworks_date->format('Y-m-d'),
+                'endDate' => $homeworks_date->format('Y-m-d'),
+            ],
+            'is_assoc' => true,
+        ])->execute();
 
         $works_api = $homeworks['works'];
         $works = [];
@@ -50,11 +66,11 @@ class HomeworkCommand extends AbstractCommand
             $subjects[$subject['id']] = $subject['name'];
         }
 
-        $lessons_api = $homeworks['lessons'];
-
         $dic = getDic();
+
+        $lessons_api = $homeworks['lessons'];
         $lessons = [];
-        $result = "{$dic['days_of_week'][$date->format('w')]}:\n";
+        $result = "{$dic['days_of_week'][$homeworks_date->format('w')]}:\n";
         foreach ($lessons_api as $lesson) {
             $lessons[$lesson['number']] = [
                 'subjectName' => $subjects[$lesson['subjectId']],
@@ -67,7 +83,7 @@ class HomeworkCommand extends AbstractCommand
         foreach ($lessons as $number => $lesson) {
             $result .= "{$dic['lesson_numbers'][$number]} {$lesson['subjectName']}\n";
             foreach ($lesson['works'] as $key => $work) {
-                if (count($lesson['works'])-1 == $key) {
+                if (count($lesson['works']) - 1 == $key) {
                     $result .= "{$dic['tree_icons']['b-l']} ";
                 } else {
                     $result .= "{$dic['tree_icons']['v-l']} ";

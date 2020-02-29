@@ -2,6 +2,8 @@
 
 namespace App\Operations;
 
+use App\HttpRequestBuilder\HttpRequest;
+
 class UserOperation
 {
     public function getUserInfo($user_id)
@@ -13,7 +15,9 @@ class UserOperation
     public function getContext()
     {
         $user = getUser();
-        return json_decode(file_get_contents("https://api.dnevnik.ru/v2.0/users/me/context?access_token={$user->access_token}"), true);
+        return HttpRequest::get('users/me/context', [], [
+            'access_token' => $user->access_token
+        ])->execute();
     }
 
     public function getUserEduGroups($user_id)

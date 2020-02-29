@@ -2,15 +2,12 @@
 
 namespace App\Commands;
 
-use App\HttpRequestBuilder\HttpRequest;
-use App\Objects\ContextObject\SubjectObject;
 use App\Operations\ContextOperation;
 use App\Operations\ScheduleOperation;
 use App\Operations\SubjectOperation;
-use App\Operations\UserOperation;
 use DateTime;
 
-class ScheduleCommand extends AbstractCommand
+class TodayScheduleCommand extends AbstractCommand
 {
 
     /**
@@ -19,10 +16,7 @@ class ScheduleCommand extends AbstractCommand
      */
     public function execute()
     {
-        $date = new DateTime();
-        $date_from = $date->modify('-' . ((int) $date->format('w') - 1) . ' days');
-        $date_to = (clone $date_from)->modify('+ 6 days')->format('Y-m-d');
-        $date_from = $date_from->format('Y-m-d');
+        $date = (new DateTime())->format('Y-m-d');
 
         $context = ContextOperation::me();
 
@@ -37,8 +31,8 @@ class ScheduleCommand extends AbstractCommand
             $subjects[$subject->id] = $subject->name;
         }
 
-        $result = "Расписание с $date_from до $date_to\n";
-        $schedule = ScheduleOperation::getSchedule($context->personId, $edu_group_id, $date_from, $date_to);
+        $result = "Расписание на сегодня: \n";
+        $schedule = ScheduleOperation::getSchedule($context->personId, $edu_group_id, $date, $date);
 
         foreach ($schedule->days as $day) {
             $date = new DateTime($day->date);
