@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Commands;
+namespace App\Bot\Commands;
 
 use App\HttpRequestBuilder\HttpRequest;
 use App\Operations\ContextOperation;
@@ -35,13 +35,15 @@ class HomeworkCommand extends AbstractCommand
             ],
             'is_assoc' => true,
         ])->execute()['days'][0]['lessons'];
-        $last_lesson = $today_schedule[count($today_schedule) - 1];
-        $hours = trim(substr($last_lesson['hours'], stripos($last_lesson['hours'], '-') + 2));
-
         $school = $user_info->schools[0];
+        if (!empty($today_schedule)) {
+            $last_lesson = $today_schedule[count($today_schedule) - 1];
+            $hours = trim(substr($last_lesson['hours'], stripos($last_lesson['hours'], '-') + 2));
 
-        $homeworks_date = ($date >= new DateTime($hours)) ? (clone $date)->modify('+1 day') : clone $date;
-
+            $homeworks_date = ($date >= new DateTime($hours)) ? (clone $date)->modify('+1 day') : clone $date;
+        } else {
+            $homeworks_date = (clone $date)->modify('+1 day');
+        }
         $homeworks = HttpRequest::init('users/me/school/:school_id/homeworks', [
             'url_params' => [
                 'school_id' => $school->id

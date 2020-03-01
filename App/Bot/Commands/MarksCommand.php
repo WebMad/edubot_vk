@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Commands;
+namespace App\Bot\Commands;
 
 use App\HttpRequestBuilder\HttpRequest;
 use App\Objects\ContextObject\ContextObject;

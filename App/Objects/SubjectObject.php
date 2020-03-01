@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Objects\ContextObject;
+namespace App\Objects;
 
 
 /**

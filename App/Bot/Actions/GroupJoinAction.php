@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions;
+namespace App\Bot\Actions;
 
 class GroupJoinAction extends AbstractAction
 {

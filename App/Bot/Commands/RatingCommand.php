@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Commands;
+namespace App\Bot\Commands;
 
 
 use App\HttpRequestBuilder\HttpRequest;

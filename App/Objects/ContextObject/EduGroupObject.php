@@ -2,6 +2,8 @@
 
 namespace App\Objects\ContextObject;
 
+use App\Objects\SubjectObject;
+
 /**
  * Class EduGroupObject
  * @package App\Objects\ContextObject

@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Commands;
+namespace App\Bot\Commands;
 
 use App\Models\User;
+use VK\Client\VKApiClient;
 
 class LoginCommand extends AbstractCommand
 {
@@ -37,7 +38,13 @@ class LoginCommand extends AbstractCommand
                 'cookie_file' => $this->cookie_file,
             ]);
 
-            return 'Вход выполнен';
+            (new VKApiClient())->messages()->send(ACCESS_TOKEN, [
+                'peer_id' => $this->getMessageObject()['peer_id'],
+                'message' => 'Вход выполнен',
+                'random_id' => rand(0, 100000),
+                'keyboard' => getDic()['keyboards']['main_keyboard'],
+            ]);
+            return '';
         }
         return 'Недостаточно аргументов';
     }

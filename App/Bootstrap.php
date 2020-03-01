@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Actions\AbstractAction;
+use App\Bot\Actions\AbstractAction;
 use App\Models\Database;
 
 class Bootstrap
@@ -31,13 +31,26 @@ class Bootstrap
         $this->database = new Database();
 
         $this->is_init = true;
-        $this->route();
+
+        $uri = $_SERVER['REQUEST_URI'];
+        $uri_explode = explode('/', $uri);
+        if (mb_strtolower($uri_explode[1]) == 'bot') {
+            $this->routeBot();
+        } elseif (mb_strtolower($uri_explode[1]) == 'api') {
+            $this->routeApi();
+        }
+        return false;
+    }
+
+    public function routeApi()
+    {
+        return true;
     }
 
     /**
      * Роутинг
      */
-    private function route()
+    private function routeBot()
     {
         $post = file_get_contents("php://input");
         if (!empty($post)) {
@@ -45,7 +58,7 @@ class Bootstrap
             $check_result = $this->checkCredential($data);
             if (!$check_result['error']) {
                 if (!empty($data['type'])) {
-                    $action_full_name = 'App\Actions\\' . str_replace('_', '', ucwords($data['type'], '_')) . 'Action';
+                    $action_full_name = 'App\Bot\Actions\\' . str_replace('_', '', ucwords($data['type'], '_')) . 'Action';
                     $action_file_name = APP_DIR . '/' . str_replace('\\', '/', $action_full_name) . '.php';
                     if (file_exists($action_file_name)) {
                         require $action_file_name;

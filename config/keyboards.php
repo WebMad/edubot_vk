@@ -1,0 +1,134 @@
+<?php
+
+return [
+    'help_keyboard' => json_encode([
+        'one_time' => false,
+        'buttons' => [
+            [
+                [
+                    'action' => [
+                        'type' => 'text',
+                        'payload' => json_encode([
+                            'button' => 'help'
+                        ]),
+                        "label" => "/помощь",
+                    ],
+                    'color' => 'primary'
+                ]
+            ]
+        ]
+    ]),
+    'main_keyboard' => json_encode([
+        'one_time' => false,
+        'buttons' => [
+            [
+                [
+                    'action' => [
+                        'type' => 'text',
+                        'payload' => json_encode([
+                            'button' => 'week'
+                        ]),
+                        "label" => "/неделя",
+                    ],
+                    'color' => 'primary'
+                ],
+                [
+                    'action' => [
+                        'type' => 'text',
+                        'payload' => json_encode([
+                            'button' => 'today'
+                        ]),
+                        "label" => "/сегодня",
+                    ],
+                    'color' => 'primary'
+                ],
+                [
+                    'action' => [
+                        'type' => 'text',
+                        'payload' => json_encode([
+                            'button' => 'tomorrow'
+                        ]),
+                        "label" => "/завтра",
+                    ],
+                    'color' => 'primary'
+                ]
+            ],
+            [
+                [
+                    'action' => [
+                        'type' => 'text',
+                        'payload' => json_encode([
+                            'button' => 'marks'
+                        ]),
+                        "label" => "/оценки",
+                    ],
+                    'color' => 'primary'
+                ],
+                [
+                    'action' => [
+                        'type' => 'text',
+                        'payload' => json_encode([
+                            'button' => 'homework'
+                        ]),
+                        "label" => "/ДЗ",
+                    ],
+                    'color' => 'primary'
+                ],
+                [
+                    'action' => [
+                        'type' => 'text',
+                        'payload' => json_encode([
+                            'button' => 'all_marks'
+                        ]),
+                        "label" => "/оценки все",
+                    ],
+                    'color' => 'primary'
+                ]
+            ],
+            [
+                [
+                    'action' => [
+                        'type' => 'text',
+                        'payload' => json_encode([
+                            'button' => 'news'
+                        ]),
+                        "label" => "/новости",
+                    ],
+                    'color' => 'primary'
+                ],
+                [
+                    'action' => [
+                        'type' => 'text',
+                        'payload' => json_encode([
+                            'button' => 'rating'
+                        ]),
+                        "label" => "/рейтинг",
+                    ],
+                    'color' => 'primary'
+                ]
+            ],
+            [
+                [
+                    'action' => [
+                        'type' => 'text',
+                        'payload' => json_encode([
+                            'button' => 'help'
+                        ]),
+                        "label" => "/помощь",
+                    ],
+                    'color' => 'primary'
+                ],
+                [
+                    'action' => [
+                        'type' => 'text',
+                        'payload' => json_encode([
+                            'button' => 'logout'
+                        ]),
+                        "label" => "/выйти",
+                    ],
+                    'color' => 'primary'
+                ]
+            ]
+        ]
+    ]),
+];

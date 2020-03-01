@@ -41,4 +41,5 @@ return [
         'warning' => '⚠',
     ],
     'commands' => include 'commands.php',
+    'keyboards' => include "keyboards.php",
 ];
