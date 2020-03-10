@@ -3,6 +3,7 @@
 namespace App\Bot\Commands;
 
 use App\Models\User;
+use App\Operations\AuthOperation;
 use VK\Client\VKApiClient;
 
 class LoginCommand extends AbstractCommand
@@ -27,7 +28,7 @@ class LoginCommand extends AbstractCommand
                 return 'Неверный логин или пароль';
             }
             $this->cookie_file = $dnevnik_user_info['cookie_file'];
-            $access_token = $this->getAccessToken(DNEVNIK_CLIENT_ID);
+            $access_token = AuthOperation::getDnevnikAccessToken(DNEVNIK_CLIENT_ID);
 
             User::create([
                 'login' => $args[0],
@@ -87,31 +88,5 @@ class LoginCommand extends AbstractCommand
             'user_id' => $user_id,
             'cookie_file' => $cookie_file,
         ];
-    }
-
-    private function getAccessToken($client_id)
-    {
-        $ch = curl_init();
-        curl_setopt_array($ch, [
-            CURLOPT_URL => "https://login.dnevnik.ru/oauth2/?access_token=0&response_type=token&client_id=$client_id&scope=Avatar,FullName,Schools,EduGroups,Lessons,Marks,Relatives,Roles,EmailAddress,Birthday,Messages&is_grated=true",
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => [
-                'access_token' => 0,
-                'response_type' => 'token',
-                'client_id' => $client_id,
-                'scope' => 'Avatar,FullName,Schools,EduGroups,Lessons,Marks,Relatives,Roles,EmailAddress,Birthday,Messages',
-                'is_granted' => 'true'
-            ],
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_COOKIEFILE => $this->cookie_file,
-            CURLOPT_HEADER => true,
-        ]);
-        ob_start();
-        curl_exec($ch);
-        $access_token = substr(explode('&', ob_get_contents())[4], 28);
-        ob_end_clean();
-        curl_close($ch);
-        return $access_token;
     }
 }

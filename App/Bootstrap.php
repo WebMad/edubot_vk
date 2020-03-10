@@ -44,7 +44,30 @@ class Bootstrap
 
     public function routeApi()
     {
-        return true;
+        $uri = $_SERVER['REQUEST_URI'];
+        $uri_explode = explode('/', $uri);
+        if (empty($uri_explode[2])) {
+            return false;
+        }
+        $controller_name = $uri_explode[2] . 'Controller';
+        $method_name = empty($uri_explode[3]) ? 'index' : $uri_explode[3];
+        $controller_path = APP_DIR . '/App/API/' . $controller_name . '.php';
+        if (file_exists($controller_path)) {
+            require $controller_path;
+            $controller_full_name = 'App\API\\' . $controller_name;
+            if (class_exists($controller_full_name) &&
+                method_exists($controller = new $controller_full_name, $method_name)) {
+                ob_start();
+                $result = $controller->$method_name();
+                $buffer = ob_get_contents();
+                ob_end_clean();
+                echo $buffer;
+                echo $result;
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

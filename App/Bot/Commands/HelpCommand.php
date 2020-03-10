@@ -18,7 +18,7 @@ class HelpCommand extends AbstractCommand
         $dic = getDic();
         $commands = $dic['commands'];
         foreach ($commands as $key => $command) {
-            $result .= "{$dic['icons']['pencil']} /$key {$command['description']}\n";
+            $result .= "{$dic['icons']['pencil']} " . COMMAND_PREFIX . "$key {$command['description']}\n";
         }
 
         return $result;
