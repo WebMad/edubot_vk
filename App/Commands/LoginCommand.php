@@ -29,7 +29,7 @@ class LoginCommand extends AbstractCommand
                 return 'Неверный логин или пароль';
             }
             $this->cookie_file = $dnevnik_user_info['cookie_file'];
-            $access_token = AuthOperation::getDnevnikAccessToken(DNEVNIK_CLIENT_ID);
+            $access_token = AuthOperation::getDnevnikAccessToken($this->getMessageObject()['from_id']);
 
             User::create([
                 'login' => $args[0],
