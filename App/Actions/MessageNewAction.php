@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Bot\Actions;
+namespace App\Actions;
 
-use App\Bot\Commands\AbstractCommand;
-use App\Bot\Commands\HelpCommand;
+use App\Commands\AbstractCommand;
+use App\Commands\HelpCommand;
 use App\Models\User;
 
 class MessageNewAction extends AbstractAction

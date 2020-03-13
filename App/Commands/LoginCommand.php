@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Bot\Commands;
+namespace App\Commands;
 
 use App\Models\User;
 use App\Operations\AuthOperation;
@@ -23,6 +23,7 @@ class LoginCommand extends AbstractCommand
             return 'Вы уже авторизованы';
         }
         if (!empty($args[0]) && !empty($args[1])) {
+//            AuthOperation::loginDnevnik($args[0], $args[1], $);
             $dnevnik_user_info = $this->loginDnevnik($args[0], $args[1]);
             if (!$dnevnik_user_info['result']) {
                 return 'Неверный логин или пароль';

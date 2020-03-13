@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Bot\Commands;
+namespace App\Commands;
 
 class HelpCommand extends AbstractCommand
 {

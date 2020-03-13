@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Bot\Commands;
+namespace App\Commands;
 
 use App\Operations\ContextOperation;
 use App\Operations\ScheduleOperation;
 use App\Operations\SubjectOperation;
 use DateTime;
 
-class TomorrowScheduleCommand extends AbstractCommand
+class TodayScheduleCommand extends AbstractCommand
 {
 
     /**
@@ -16,7 +16,7 @@ class TomorrowScheduleCommand extends AbstractCommand
      */
     public function execute()
     {
-        $date = (new DateTime())->modify('+1 day')->format('Y-m-d');
+        $date = (new DateTime())->format('Y-m-d');
 
         $context = ContextOperation::me();
 
@@ -31,7 +31,7 @@ class TomorrowScheduleCommand extends AbstractCommand
             $subjects[$subject->id] = $subject->name;
         }
 
-        $result = "Расписание на завтра: \n";
+        $result = "Расписание на сегодня: \n";
         $schedule = ScheduleOperation::getSchedule($context->personId, $edu_group_id, $date, $date);
 
         foreach ($schedule->days as $day) {
@@ -39,16 +39,12 @@ class TomorrowScheduleCommand extends AbstractCommand
             $result .= "\n\n";
             $result .= $dic['days_of_week'][$date->format('w')] . ": \n";
             $lessons = $day->lessons;
-            if (!empty($lessons)) {
-                foreach ($lessons as $lesson) {
-                    $result .= "{$dic['lesson_numbers'][$lesson->number]} {$subjects[$lesson->subjectId]} | {$lesson->hours}";
-                    if (!empty($lesson->place)) {
-                        $result .= " | каб. {$lesson->place}";
-                    }
-                    $result .= "\n";
+            foreach ($lessons as $lesson) {
+                $result .= "{$dic['lesson_numbers'][$lesson->number]} {$subjects[$lesson->subjectId]} | {$lesson->hours}";
+                if (!empty($lesson->place)) {
+                    $result .= " | каб. {$lesson->place}";
                 }
-            } else {
-                $result .= "Нет уроков";
+                $result .= "\n";
             }
         }
 

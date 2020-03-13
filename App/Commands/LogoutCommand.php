@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Bot\Commands;
+namespace App\Commands;
 
 
 use VK\Client\VKApiClient;
