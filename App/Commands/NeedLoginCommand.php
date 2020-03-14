@@ -20,10 +20,9 @@ class NeedLoginCommand extends AbstractCommand
      */
     public function execute()
     {
-        $result = "Необходимо войти в аккаунт Дневник.ру. Вы можете сделать это в ЛС с ботом.";
         $this->getResponse()->addMessage([
             'peer_id' => $this->getMessageObject()['peer_id'],
-            'message' => $result,
+            'message' => getMessagesTemplates()['need_login'],
             'random_id' => rand(0, 100000),
         ]);
         $this->setResponse((new HelpCommand($this->getResponse(), $this->getMessageObject()))->execute());
