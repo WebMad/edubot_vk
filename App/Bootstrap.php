@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Bot\Actions\AbstractAction;
+use App\Actions\AbstractAction;
 use App\Models\Database;
 
 class Bootstrap
@@ -56,14 +56,15 @@ class Bootstrap
                     if (file_exists($action_file_name)) {
                         require $action_file_name;
                         if (class_exists($action_full_name)) {
-                            if (method_exists($action = new $action_full_name, 'execute')) {
+                            if (method_exists($action = new $action_full_name(), 'execute')) {
                                 /** @var AbstractAction $action */
                                 ob_start();
-                                echo $action->execute($data);
-                                $content = ob_get_contents();
+                                /** @var Response $response */
+                                $response = $action->execute($data);
                                 ob_end_clean();
-                                echo $content;
                                 header("Content-type:{$action->getContentType()};charset={$action->getCharset()}");
+                                $response->sendMessages();
+                                echo $response->getBody();
                                 return true;
                             }
                         }

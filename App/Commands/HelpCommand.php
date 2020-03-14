@@ -5,7 +5,6 @@ namespace App\Commands;
 class HelpCommand extends AbstractCommand
 {
     protected $command_name = 'Войти';
-    private $cookie_file;
 
     protected $check_auth = false;
 
@@ -21,6 +20,10 @@ class HelpCommand extends AbstractCommand
             $result .= "{$dic['icons']['pencil']} " . COMMAND_PREFIX . "$key {$command['description']}\n";
         }
 
-        return $result;
+        return $this->getResponse()->addMessage([
+            'peer_id' => $this->getMessageObject()['peer_id'],
+            'message' => $result,
+            'random_id' => rand(0, 100000)
+        ]);
     }
 }

@@ -33,8 +33,6 @@ class MarksCommand extends AbstractCommand
     /**
      * @param $user
      * @param $user_info ContextObject
-     * @param $start_marks
-     * @param $finish_marks
      * @param bool $is_all
      * @return string
      * @throws \Exception
@@ -76,6 +74,10 @@ class MarksCommand extends AbstractCommand
             }
             $result .= "\n\n";
         }
-        return $result;
+        return $this->getResponse()->addMessage([
+            'peer_id' => $this->getMessageObject()['peer_id'],
+            'message' => $result,
+            'random_id' => rand(0, 100000),
+        ]);
     }
 }

@@ -54,6 +54,10 @@ class ScheduleCommand extends AbstractCommand
             }
         }
 
-        return $result;
+        return $this->getResponse()->addMessage([
+            'peer_id' => $this->getMessageObject()['peer_id'],
+            'message' => $result,
+            'random_id' => rand(0, 100000),
+        ]);
     }
 }

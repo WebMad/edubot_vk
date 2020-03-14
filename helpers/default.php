@@ -25,3 +25,8 @@ function getDic()
 {
     return require '../config/dic.php';
 }
+
+function getMessagesTemplates()
+{
+    return require '../config/messages_tpl.php';
+}

@@ -19,14 +19,23 @@ class LoginCommand extends AbstractCommand
     public function execute()
     {
         $args = $this->getArgs();
+        $peer_id = $this->getMessageObject()['peer_id'];
         if (getUser()) {
-            return 'Вы уже авторизованы';
+            return $this->getResponse()->addMessage([
+                'peer_id' => $peer_id,
+                'message' => 'Вы уже авторизованы',
+                'random_id' => rand(0, 100000),
+            ]);
         }
         if (!empty($args[0]) && !empty($args[1])) {
 //            AuthOperation::loginDnevnik($args[0], $args[1], $);
             $dnevnik_user_info = $this->loginDnevnik($args[0], $args[1]);
             if (!$dnevnik_user_info['result']) {
-                return 'Неверный логин или пароль';
+                return $this->getResponse()->addMessage([
+                    'peer_id' => $peer_id,
+                    'message' => 'Неверный логин или пароль',
+                    'random_id' => rand(0, 100000),
+                ]);
             }
             $this->cookie_file = $dnevnik_user_info['cookie_file'];
             $access_token = AuthOperation::getDnevnikAccessToken($this->getMessageObject()['from_id']);
@@ -34,21 +43,25 @@ class LoginCommand extends AbstractCommand
             User::create([
                 'login' => $args[0],
                 'password' => $args[1],
-                'vk_user_id' => $this->getMessageObject()['peer_id'],
+                'vk_user_id' => $peer_id,
                 'access_token' => $access_token,
                 'dnevnik_user_id' => $dnevnik_user_info['user_id'],
                 'cookie_file' => $this->cookie_file,
             ]);
 
             (new VKApiClient())->messages()->send(ACCESS_TOKEN, [
-                'peer_id' => $this->getMessageObject()['peer_id'],
+                'peer_id' => $peer_id,
                 'message' => 'Вход выполнен',
                 'random_id' => rand(0, 100000),
                 'keyboard' => getDic()['keyboards']['main_keyboard'],
             ]);
-            return '';
+            return $this->getResponse();
         }
-        return 'Недостаточно аргументов';
+        return $this->getResponse()->addMessage([
+            'peer_id' => $peer_id,
+            'message' => 'Недостаточно аргументов',
+            'random_id' => rand(0, 100000),
+        ]);
     }
 
     private function loginDnevnik($login, $password)
