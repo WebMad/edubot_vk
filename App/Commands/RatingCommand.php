@@ -44,7 +44,7 @@ class RatingCommand extends AbstractCommand
 
         $classmates = [];
         foreach ($classmates_api as $classmate) {
-            $classmates[$classmate->id] = $classmate->shortName;
+            $classmates[$classmate->id] = $classmate;
         }
 
         $avg_marks = [];
@@ -62,11 +62,13 @@ class RatingCommand extends AbstractCommand
         asort($avg_marks);
         $avg_marks = array_reverse($avg_marks, true);
 
-        $result = "Рейтинг класса: \n\n";
+        $result = "Ваша позиция в рейтинге класса: \n\n";
 
         $number = 1;
         foreach ($avg_marks as $key => $avg_mark) {
-            $result .= $number . ". {$classmates[$key]} - {$avg_mark}\n";
+            if ($classmates[$key]->id == $context->personId) {
+                $result .= $number . ". {$classmates[$key]->shortName} - {$avg_mark}\n";
+            }
             $number++;
         }
 
