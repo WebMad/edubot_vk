@@ -3,6 +3,7 @@
 namespace App\Commands;
 
 use App\Operations\ContextOperation;
+use App\Operations\HomeworkOperation;
 use App\Operations\ScheduleOperation;
 use App\Operations\SubjectOperation;
 use DateTime;
@@ -31,19 +32,38 @@ class TodayScheduleCommand extends AbstractCommand
             $subjects[$subject->id] = $subject->name;
         }
 
+        $homeworks_http = HomeworkOperation::getHomeworkByDate($context->schoolIds[0], $date, $date);
+        $homeworks = [];
+        foreach ($homeworks_http->works as $homework_http) {
+            $homeworks[$homework_http->lesson][] = $homework_http;
+        }
+
         $result = "Расписание на сегодня: \n";
         $schedule = ScheduleOperation::getSchedule($context->personId, $edu_group_id, $date, $date);
-
         foreach ($schedule->days as $day) {
             $date = new DateTime($day->date);
             $result .= "\n\n";
             $result .= $dic['days_of_week'][$date->format('w')] . ": \n";
             $lessons = $day->lessons;
             foreach ($lessons as $lesson) {
-                $result .= "{$dic['lesson_numbers'][$lesson->number]} {$subjects[$lesson->subjectId]} | {$lesson->hours}";
+                $result .= "{$dic['lesson_numbers'][$lesson->number]} {$subjects[$lesson->subjectId]}";
+                if (!empty($lesson->hours)) {
+                    $result .= " | {$lesson->hours}";
+                }
                 if (!empty($lesson->place)) {
                     $result .= " | каб. {$lesson->place}";
                 }
+                if (!empty($homeworks[$lesson->id])) {
+                    foreach ($homeworks[$lesson->id] as $key => $homework) {
+                        if (count($homeworks[$lesson->id]) == ($key + 1)) {
+                            $result .= "\n{$dic['tree_icons']['b-l']} ";
+                        } else {
+                            $result .= "\n{$dic['tree_icons']['v-l']} ";
+                        }
+                        $result .= $homework->text;
+                    }
+                }
+
                 $result .= "\n";
             }
         }
