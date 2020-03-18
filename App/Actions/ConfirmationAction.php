@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Bot\Actions;
+namespace App\Actions;
+
+use App\Response;
 
 class ConfirmationAction extends AbstractAction
 {
@@ -10,6 +12,6 @@ class ConfirmationAction extends AbstractAction
      */
     function execute($data)
     {
-        return CONFIRMATION_STRING;
+        return new Response(CONFIRMATION_STRING);
     }
 }

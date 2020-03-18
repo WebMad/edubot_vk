@@ -1,15 +1,15 @@
 <?php
 
-use App\Bot\Commands\HelpCommand;
-use App\Bot\Commands\HomeworkCommand;
-use App\Bot\Commands\LoginCommand;
-use App\Bot\Commands\LogoutCommand;
-use App\Bot\Commands\MarksCommand;
-use App\Bot\Commands\NewsCommand;
-use App\Bot\Commands\RatingCommand;
-use App\Bot\Commands\ScheduleCommand;
-use App\Bot\Commands\TodayScheduleCommand;
-use App\Bot\Commands\TomorrowScheduleCommand;
+use App\Commands\HelpCommand;
+use App\Commands\HomeworkCommand;
+use App\Commands\LoginCommand;
+use App\Commands\LogoutCommand;
+use App\Commands\MarksCommand;
+use App\Commands\NewsCommand;
+use App\Commands\RatingCommand;
+use App\Commands\ScheduleCommand;
+use App\Commands\TodayScheduleCommand;
+use App\Commands\TomorrowScheduleCommand;
 
 return [
     'войти' => [

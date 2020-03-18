@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Bot\Commands;
+namespace App\Commands;
 
 
 use App\Operations\UserOperation;
@@ -37,6 +37,10 @@ class LessonsCommand extends AbstractCommand
             $result .= $date;
         }
 
-        return $result;
+        return $this->getResponse()->addMessage([
+            'peer_id' => $this->getMessageObject()['peer_id'],
+            'message' => $result,
+            'random_id' => rand(0, 100000),
+        ]);;
     }
 }

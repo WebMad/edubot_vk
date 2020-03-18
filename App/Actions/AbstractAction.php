@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Bot\Actions;
+namespace App\Actions;
 
+use App\Response;
 use VK\Client\VKApiClient;
 
 abstract class AbstractAction
@@ -23,7 +24,7 @@ abstract class AbstractAction
      * Обработка события
      *
      * @param $data
-     * @return mixed
+     * @return Response
      */
     abstract function execute($data);
 

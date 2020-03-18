@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Bot\Commands;
+namespace App\Commands;
 
 use App\Models\User;
+use App\Operations\AuthOperation;
 use VK\Client\VKApiClient;
 
 class LoginCommand extends AbstractCommand
@@ -18,35 +19,49 @@ class LoginCommand extends AbstractCommand
     public function execute()
     {
         $args = $this->getArgs();
+        $peer_id = $this->getMessageObject()['peer_id'];
         if (getUser()) {
-            return 'Вы уже авторизованы';
+            return $this->getResponse()->addMessage([
+                'peer_id' => $peer_id,
+                'message' => 'Вы уже авторизованы',
+                'random_id' => rand(0, 100000),
+            ]);
         }
         if (!empty($args[0]) && !empty($args[1])) {
+//            AuthOperation::loginDnevnik($args[0], $args[1], $);
             $dnevnik_user_info = $this->loginDnevnik($args[0], $args[1]);
             if (!$dnevnik_user_info['result']) {
-                return 'Неверный логин или пароль';
+                return $this->getResponse()->addMessage([
+                    'peer_id' => $peer_id,
+                    'message' => 'Неверный логин или пароль',
+                    'random_id' => rand(0, 100000),
+                ]);
             }
             $this->cookie_file = $dnevnik_user_info['cookie_file'];
-            $access_token = $this->getAccessToken(DNEVNIK_CLIENT_ID);
+            $access_token = AuthOperation::getDnevnikAccessToken($this->getMessageObject()['from_id']);
 
             User::create([
                 'login' => $args[0],
                 'password' => $args[1],
-                'vk_user_id' => $this->getMessageObject()['peer_id'],
+                'vk_user_id' => $peer_id,
                 'access_token' => $access_token,
                 'dnevnik_user_id' => $dnevnik_user_info['user_id'],
                 'cookie_file' => $this->cookie_file,
             ]);
 
             (new VKApiClient())->messages()->send(ACCESS_TOKEN, [
-                'peer_id' => $this->getMessageObject()['peer_id'],
+                'peer_id' => $peer_id,
                 'message' => 'Вход выполнен',
                 'random_id' => rand(0, 100000),
                 'keyboard' => getDic()['keyboards']['main_keyboard'],
             ]);
-            return '';
+            return $this->getResponse();
         }
-        return 'Недостаточно аргументов';
+        return $this->getResponse()->addMessage([
+            'peer_id' => $peer_id,
+            'message' => 'Недостаточно аргументов',
+            'random_id' => rand(0, 100000),
+        ]);
     }
 
     private function loginDnevnik($login, $password)
@@ -87,31 +102,5 @@ class LoginCommand extends AbstractCommand
             'user_id' => $user_id,
             'cookie_file' => $cookie_file,
         ];
-    }
-
-    private function getAccessToken($client_id)
-    {
-        $ch = curl_init();
-        curl_setopt_array($ch, [
-            CURLOPT_URL => "https://login.dnevnik.ru/oauth2/?access_token=0&response_type=token&client_id=$client_id&scope=Avatar,FullName,Schools,EduGroups,Lessons,Marks,Relatives,Roles,EmailAddress,Birthday,Messages&is_grated=true",
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => [
-                'access_token' => 0,
-                'response_type' => 'token',
-                'client_id' => $client_id,
-                'scope' => 'Avatar,FullName,Schools,EduGroups,Lessons,Marks,Relatives,Roles,EmailAddress,Birthday,Messages',
-                'is_granted' => 'true'
-            ],
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_COOKIEFILE => $this->cookie_file,
-            CURLOPT_HEADER => true,
-        ]);
-        ob_start();
-        curl_exec($ch);
-        $access_token = substr(explode('&', ob_get_contents())[4], 28);
-        ob_end_clean();
-        curl_close($ch);
-        return $access_token;
     }
 }
