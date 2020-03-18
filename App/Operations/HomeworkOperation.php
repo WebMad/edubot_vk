@@ -13,7 +13,7 @@ class HomeworkOperation
      * @param $school_id
      * @param $from
      * @param $to
-     * @return WorkObject[]
+     * @return object
      */
     static public function getHomeworkByDate($school_id, $from, $to)
     {
