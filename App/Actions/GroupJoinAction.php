@@ -14,7 +14,7 @@ class GroupJoinAction extends AbstractAction
     {
         return (new Response())->addMessage([
             'peer_id' => $data['object']['user_id'],
-            'message' => getMessagesTemplates()['welcome_message'],
+            'message' => getMessagesTemplates()['group_join_message'],
             'random_id' => rand(0, 100000),
         ]);
     }
