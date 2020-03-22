@@ -4,7 +4,9 @@
 namespace App\Commands;
 
 
+use App\Factories\RatingNameFactory;
 use App\HttpRequestBuilder\HttpRequest;
+use App\Models\User;
 use App\Operations\ContextOperation;
 use App\Operations\EduGroupOperation;
 use App\Operations\UserOperation;
@@ -63,18 +65,35 @@ class RatingCommand extends AbstractCommand
         $avg_marks = array_reverse($avg_marks, true);
 
         $result = "Ваша позиция в рейтинге класса: \n\n";
-
+        $factory = new RatingNameFactory();
         $number = 1;
+        $icon = getDic()['icons']['user'];
+        $classmates_dnevnik_id = array_map(function($classmate) {
+            return $classmate->id;
+        },$classmates);
+        $classmates_db = User::where('dnevnik_user_id', $classmates_dnevnik_id)
+                               ->where('personal_data_access', User::DATA_ACCESSED)
+                               ->get()->pluck('dnevnik_user_id')->all();
         foreach ($avg_marks as $key => $avg_mark) {
-            if ($classmates[$key]->id == $context->personId) {
-                $result .= $number . ". {$classmates[$key]->shortName} - {$avg_mark}\n";
+            if ($classmates[$key]->id == $context->personId
+                || in_array($classmates[$key]->id, $classmates_db)) {
+                $result .= $number . ". {$classmates[$key]->shortName} - {$avg_mark} {$icon}\n";
+            }
+            else {
+                $random_name = $factory->generate();
+                $result.= "{$number}. {$random_name} - {$avg_mark}\n";
             }
             $number++;
+        }
+
+        if ($user->personal_data_access == User::DATA_RESTRICT_ASK) {
+            $result.="Чтобы ваше настоящее имя отображалось в списке класса, вы должны дать на это согласие.\n";
         }
 
         return $this->getResponse()->addMessage([
             'peer_id' => $this->getMessageObject()['peer_id'],
             'message' => $result,
+            'keyboard' => 'personal_data_keyboard',
             'random_id' => rand(0, 100000),
         ]);
     }

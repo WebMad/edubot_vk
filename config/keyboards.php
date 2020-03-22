@@ -1,6 +1,44 @@
 <?php
 
 return [
+    'personal_data_keyboard' => json_encode([
+        'one_time' => true,
+        'inline' => true,
+        'buttons' => [
+            [
+                [
+                    'action' => [
+                        'type' => 'text',
+                        'payload' => json_encode([
+                            'button' => 'personal_data_access',
+                        ]),
+                        "label" => "Хорошо",
+                    ],
+                    'color' => 'positive',
+                ],
+                [
+                    'action' => [
+                        'type' => 'text',
+                        'payload' => json_encode([
+                            'button' => 'personal_data_restrict_ask',
+                        ]),
+                        "label" => "Нет",
+                    ],
+                    'color' => 'negative',
+                ],
+                [
+                    'action' => [
+                        'type' => 'text',
+                        'payload' => json_encode([
+                            'button' => 'personal_data_restrict',
+                        ]),
+                        "label" => "Нет, больше не спрашивать",
+                    ],
+                    'color' => 'primary',
+                ]
+            ]
+        ]
+    ]),
     'help_keyboard' => json_encode([
         'one_time' => false,
         'buttons' => [
