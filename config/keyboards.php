@@ -2,7 +2,6 @@
 
 return [
     'personal_data_keyboard' => json_encode([
-        'one_time' => true,
         'inline' => true,
         'buttons' => [
             [

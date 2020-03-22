@@ -93,7 +93,7 @@ class RatingCommand extends AbstractCommand
         return $this->getResponse()->addMessage([
             'peer_id' => $this->getMessageObject()['peer_id'],
             'message' => $result,
-            'keyboard' => 'personal_data_keyboard',
+            'keyboard' => getDic()['keyboards']['personal_data_keyboard'],
             'random_id' => rand(0, 100000),
         ]);
     }
