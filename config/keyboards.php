@@ -10,8 +10,9 @@ return [
                         'type' => 'text',
                         'payload' => json_encode([
                             'button' => 'personal_data_access',
+                            'keyboard' => 'personal_data_keyboard',
                         ]),
-                        "label" => "Хорошо",
+                        "label" => "Согласен",
                     ],
                     'color' => 'positive',
                 ],
@@ -20,8 +21,9 @@ return [
                         'type' => 'text',
                         'payload' => json_encode([
                             'button' => 'personal_data_restrict_ask',
+                            'keyboard' => 'personal_data_keyboard',
                         ]),
-                        "label" => "Нет",
+                        "label" => "Не согласен",
                     ],
                     'color' => 'negative',
                 ],
@@ -30,8 +32,9 @@ return [
                         'type' => 'text',
                         'payload' => json_encode([
                             'button' => 'personal_data_restrict',
+                            'keyboard' => 'personal_data_keyboard',
                         ]),
-                        "label" => "Нет, больше не спрашивать",
+                        "label" => "Больше не спрашивать",
                     ],
                     'color' => 'primary',
                 ]

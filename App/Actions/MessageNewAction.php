@@ -16,7 +16,22 @@ class MessageNewAction extends AbstractAction
      */
     function execute($data)
     {
+        $response = new Response();
         $message_object = $data['object'];
+        $user = User::where(['vk_user_id' => $message_object['from_id']])->first();
+        if (!empty($user)) {
+            saveUser($user);
+        }
+        if (isset($message_object['payload']))
+        {
+            $payload = json_decode($message_object['payload'], TRUE);
+            $keyboard_full_name = 'App\Keyboards\\' . str_replace('_', '', ucwords($payload['keyboard'], '_'));
+            if (class_exists($keyboard_full_name)) {
+                $button_full_name = str_replace('_', '', ucwords($payload['button'], '_')) . 'Button';
+                $keyboard = new $keyboard_full_name($response, $message_object);
+                $response = $keyboard->$button_full_name();
+            }
+        }
         if (substr($message_object['text'], 0, mb_strlen(COMMAND_PREFIX)) == COMMAND_PREFIX) {
             $command = '';
             $command_parts = explode(' ', substr($message_object['text'], mb_strlen(COMMAND_PREFIX)));
@@ -26,30 +41,25 @@ class MessageNewAction extends AbstractAction
             $commands = getDic()['commands'];
             if (array_key_exists($command, $commands)) {
 
-                $user = User::where(['vk_user_id' => $message_object['from_id']])->first();
-                if (!empty($user)) {
-                    saveUser($user);
-                }
-
                 /** @var AbstractCommand $command_class */
-                $command_class = new $commands[$command]['class'](new Response(), $message_object);
+                $command_class = new $commands[$command]['class']($response, $message_object);
                 if ($command_class->getCheckAuth() && empty($user)) {
-                    return (new NeedLoginCommand(new Response(), $message_object))->execute();
+                    $response = (new NeedLoginCommand($response, $message_object))->execute();
                 } else {
                     return $command_class->execute();
                 }
             } else {
-                return (new CommandNotFoundCommand(new Response(), $message_object))->execute();
+                $response = (new CommandNotFoundCommand($response, $message_object))->execute();
             }
         }
 
         if (isset($message_object['payload'])) {
             $button = json_decode($message_object['payload'], true);
             if ($button['command'] == 'start') {
-                return (new StartCommand(new Response(), $message_object))->execute();
+                $response = (new StartCommand($response, $message_object))->execute();
             }
         }
 
-        return new Response();
+        return $response;
     }
 }
