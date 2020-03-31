@@ -1,6 +1,46 @@
 <?php
 
 return [
+    'personal_data_keyboard' => json_encode([
+        'inline' => true,
+        'buttons' => [
+            [
+                [
+                    'action' => [
+                        'type' => 'text',
+                        'payload' => json_encode([
+                            'button' => 'personal_data_access',
+                            'keyboard' => 'personal_data_keyboard',
+                        ]),
+                        "label" => "Согласен",
+                    ],
+                    'color' => 'positive',
+                ],
+                [
+                    'action' => [
+                        'type' => 'text',
+                        'payload' => json_encode([
+                            'button' => 'personal_data_restrict_ask',
+                            'keyboard' => 'personal_data_keyboard',
+                        ]),
+                        "label" => "Не согласен",
+                    ],
+                    'color' => 'negative',
+                ],
+                [
+                    'action' => [
+                        'type' => 'text',
+                        'payload' => json_encode([
+                            'button' => 'personal_data_restrict',
+                            'keyboard' => 'personal_data_keyboard',
+                        ]),
+                        "label" => "Больше не спрашивать",
+                    ],
+                    'color' => 'primary',
+                ]
+            ]
+        ]
+    ]),
     'help_keyboard' => json_encode([
         'one_time' => false,
         'buttons' => [
